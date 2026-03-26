@@ -2,15 +2,10 @@ package edu.temple.basicbrowser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ImageButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,12 +25,20 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object: WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+
+                url?.run {
+                    urlEditText.setText(this)
+                }
             }
         }
 
         goButton.setOnClickListener {
-            webView.loadUrl(urlEditText.text.toString())
+            webView.loadUrl(fixURL(urlEditText.text.toString()))
         }
-
+    }
+    fun fixURL(url: String) = if (!url.startsWith("http")) {
+        "https://$url"
+    } else {
+        url
     }
 }
